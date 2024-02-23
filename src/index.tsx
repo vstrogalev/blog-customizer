@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, useState } from 'react';
+import { StrictMode, CSSProperties, useState, useRef } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
@@ -13,13 +13,16 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-	const [state, setState] = useState({
+
+	const articleOptionsRef = useRef({
 		fontFamilyOption: defaultArticleState.fontFamilyOption,
 		fontColor: defaultArticleState.fontColor,
 		backgroundColor: defaultArticleState.backgroundColor,
 		contentWidth: defaultArticleState.contentWidth,
 		fontSizeOption: defaultArticleState.fontSizeOption,
 	});
+	const [state, setState] = useState(articleOptionsRef.current);
+
 
 	function handleChangeArticleParams({
 		fontFamilyOption,
@@ -28,14 +31,19 @@ const App = () => {
 		contentWidth,
 		fontSizeOption,
 	}: ArticleStateType) {
-		setState({
+		articleOptionsRef.current = {
 			fontFamilyOption: fontFamilyOption,
 			fontColor: fontColor,
 			backgroundColor: backgroundColor,
 			contentWidth: contentWidth,
 			fontSizeOption: fontSizeOption,
-		});
+		};
+		setState(articleOptionsRef.current);
 	}
+
+	// useEffect(()=>{
+	// 	console.log(articleOptionsRef.current);
+	// }, [articleOptionsRef]);
 
 	return (
 		<div
@@ -54,7 +62,7 @@ const App = () => {
 				получается, что дочерний компонент меняет объект, который принимает в качестве пропса
 			*/}
 			<ArticleParamsForm
-				articleProps={state}
+				articleProps={articleOptionsRef.current}
 				onChangeParams={handleChangeArticleParams}
 			/>
 			{/* а здесь компонент принимает пропсы и перерисовывается */}

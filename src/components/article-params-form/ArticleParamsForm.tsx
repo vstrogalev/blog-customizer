@@ -47,6 +47,14 @@ export const ArticleParamsForm = ({
 		setIsContainerOpen((prev) => !prev);
 	}
 
+	// function handleSubmit() {
+	// 	articleProps = {fontFamilyOption: fontSelected,
+	// 	fontColor: fontColorSelected,
+	// 	backgroundColor: bgColorSelected,
+	// 	contentWidth: contentWidthSelected,
+	// 	fontSizeOption: fontSizeSelected}
+	// }
+
 	return (
 		<>
 			<ArrowButton
@@ -96,20 +104,24 @@ export const ArticleParamsForm = ({
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='reset' />
+						<Button title='Сбросить' type='button'
+						/>
 						<Button
 							title='Применить'
 							type='submit'
-							onClick={()=>{
-									onChangeParams({
-										fontFamilyOption: fontSelected,
-										fontColor: fontColorSelected,
-										backgroundColor: bgColorSelected,
-										contentWidth: contentWidthSelected,
-										fontSizeOption: fontSizeSelected
-									});
-								}
+							onClick={(evt: React.SyntheticEvent)=>{
+								evt.preventDefault();
+								onChangeParams({
+									fontFamilyOption: fontSelected,
+									fontColor: fontColorSelected,
+									backgroundColor: bgColorSelected,
+									contentWidth: contentWidthSelected,
+									fontSizeOption: fontSizeSelected
+								});
+								setIsContainerOpen(false);
 							}
+						}
+
 						/>
 					</div>
 				</form>
