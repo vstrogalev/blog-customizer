@@ -3,7 +3,10 @@ import { StrictMode, CSSProperties, useState, useRef } from 'react';
 import clsx from 'clsx';
 
 import { Article } from './components/article/Article';
-import { ArticleStateType, defaultArticleState } from './constants/articleProps';
+import {
+	ArticleStateType,
+	defaultArticleState,
+} from './constants/articleProps';
 
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
@@ -13,7 +16,6 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-
 	const articleOptionsRef = useRef({
 		fontFamilyOption: defaultArticleState.fontFamilyOption,
 		fontColor: defaultArticleState.fontColor,
@@ -22,7 +24,6 @@ const App = () => {
 		fontSizeOption: defaultArticleState.fontSizeOption,
 	});
 	const [state, setState] = useState(articleOptionsRef.current);
-
 
 	function handleChangeArticleParams({
 		fontFamilyOption,
@@ -40,10 +41,6 @@ const App = () => {
 		};
 		setState(articleOptionsRef.current);
 	}
-
-	// useEffect(()=>{
-	// 	console.log(articleOptionsRef.current);
-	// }, [articleOptionsRef]);
 
 	return (
 		<div
@@ -65,7 +62,6 @@ const App = () => {
 				articleProps={articleOptionsRef.current}
 				onChangeParams={handleChangeArticleParams}
 			/>
-			{/* а здесь компонент принимает пропсы и перерисовывается */}
 
 			<Article />
 		</div>

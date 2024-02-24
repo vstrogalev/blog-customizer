@@ -3,12 +3,13 @@ import { Button } from 'components/button';
 
 import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
-import { useState } from 'react';
+import { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 import { Select } from '../select/Select';
 import {
 	ArticleStateType,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
@@ -47,16 +48,40 @@ export const ArticleParamsForm = ({
 		setIsContainerOpen((prev) => !prev);
 	}
 
-	// function handleSubmit() {
-	// 	articleProps = {fontFamilyOption: fontSelected,
-	// 	fontColor: fontColorSelected,
-	// 	backgroundColor: bgColorSelected,
-	// 	contentWidth: contentWidthSelected,
-	// 	fontSizeOption: fontSizeSelected}
-	// }
+	function useOutsideClickFormCloser(ref: RefObject<HTMLElement>) {
+		useEffect(() => {
+			// обработка клика
+			function handleClickOutside(event: MouseEvent) {
+				if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
+					setIsContainerOpen(false);
+				}
+			}
+			// устанавливаем слушатель с учетом открытия формы
+			if (isContainerOpen) {
+				document.addEventListener('mousedown', handleClickOutside);
+			}
+
+			return () => {
+				document.removeEventListener('mousedown', handleClickOutside);
+			};
+		}, [isContainerOpen]);
+	}
+
+	type TOutsideClickFormProps = {
+		children: ReactNode;
+	};
+
+	/**
+	 * Обертка, которая закрывает окно, если кликнули по ней
+	 */
+	function OutsideClickFormCloser({ children }: TOutsideClickFormProps) {
+		const wrapperRef = useRef(null);
+		useOutsideClickFormCloser(wrapperRef);
+		return <div ref={wrapperRef}>{children}</div>;
+	}
 
 	return (
-		<>
+		<OutsideClickFormCloser>
 			<ArrowButton
 				isContainerOpen={isContainerOpen}
 				handleClickArrowButton={handleClickArrowButton}
@@ -104,28 +129,49 @@ export const ArticleParamsForm = ({
 					/>
 
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' type='button'
+						<Button
+							title='Сбросить'
+							type='button'
+							onClick={(evt: React.SyntheticEvent) => {
+								evt.preventDefault();
+								// сбрасываем опции в форме
+								setFontSelected(defaultArticleState.fontFamilyOption);
+								setFontColorSelected(defaultArticleState.fontColor);
+								setBgColorSelected(defaultArticleState.backgroundColor);
+								setContentWidthSelected(defaultArticleState.contentWidth);
+								setFontSizeSelected(defaultArticleState.fontSizeOption);
+
+								// сбрасываем опции в стейте
+								onChangeParams({
+									fontFamilyOption: defaultArticleState.fontFamilyOption,
+									fontColor: defaultArticleState.fontColor,
+									backgroundColor: defaultArticleState.backgroundColor,
+									contentWidth: defaultArticleState.contentWidth,
+									fontSizeOption: defaultArticleState.fontSizeOption,
+								});
+
+								// закрываем форму
+								setIsContainerOpen(false);
+							}}
 						/>
 						<Button
 							title='Применить'
 							type='submit'
-							onClick={(evt: React.SyntheticEvent)=>{
+							onClick={(evt: React.SyntheticEvent) => {
 								evt.preventDefault();
 								onChangeParams({
 									fontFamilyOption: fontSelected,
 									fontColor: fontColorSelected,
 									backgroundColor: bgColorSelected,
 									contentWidth: contentWidthSelected,
-									fontSizeOption: fontSizeSelected
+									fontSizeOption: fontSizeSelected,
 								});
 								setIsContainerOpen(false);
-							}
-						}
-
+							}}
 						/>
 					</div>
 				</form>
 			</aside>
-		</>
+		</OutsideClickFormCloser>
 	);
 };

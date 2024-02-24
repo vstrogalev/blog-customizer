@@ -9,10 +9,12 @@ export type OnClick = () => void;
 type TArrowButtonProps = {
 	isContainerOpen: boolean;
 	handleClickArrowButton: () => void;
-}
+};
 
-export const ArrowButton = ({ isContainerOpen, handleClickArrowButton }: TArrowButtonProps) => {
-
+export const ArrowButton = ({
+	isContainerOpen,
+	handleClickArrowButton,
+}: TArrowButtonProps) => {
 	return (
 		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */
 		<div
