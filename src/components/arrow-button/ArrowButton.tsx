@@ -8,22 +8,22 @@ export type OnClick = () => void;
 
 type TArrowButtonProps = {
 	isContainerOpen: boolean;
-	handleClickArrowButton: () => void;
+	onClick: () => void;
 };
 
 export const ArrowButton = ({
 	isContainerOpen,
-	handleClickArrowButton,
+	onClick,
 }: TArrowButtonProps) => {
 	return (
 		/* Не забываем указаывать role и aria-label атрибуты для интерактивных элементов */
 		<div
-			onClick={handleClickArrowButton}
+			onClick={onClick}
 			role='button'
 			aria-label='Открыть/Закрыть форму параметров статьи'
 			tabIndex={0}
-			className={clsx(styles.container, {
-				[styles.container_open]: isContainerOpen,
+			className={clsx(styles.arrowContainer, {
+				[styles.arrowContainer_open]: isContainerOpen,
 			})}>
 			<img
 				src={arrow}

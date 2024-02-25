@@ -16,6 +16,7 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from '../radio-group/RadioGroup';
 import { Separator } from '../separator/Separator';
+import { OutsideClickFormCloser } from '../OutsideClickFormCloser/OutsideClickFormCloser';
 
 type TArticleProps = {
 	articleProps: ArticleStateType;
@@ -48,49 +49,30 @@ export const ArticleParamsForm = ({
 		setIsContainerOpen((prev) => !prev);
 	}
 
-	function useOutsideClickFormCloser(ref: RefObject<HTMLElement>) {
-		useEffect(() => {
-			// обработка клика
-			function handleClickOutside(event: MouseEvent) {
-				if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
-					setIsContainerOpen(false);
-				}
-			}
-			// устанавливаем слушатель с учетом открытия формы
-			if (isContainerOpen) {
-				document.addEventListener('mousedown', handleClickOutside);
-			}
-
-			return () => {
-				document.removeEventListener('mousedown', handleClickOutside);
-			};
-		}, [isContainerOpen]);
-	}
-
-	type TOutsideClickFormProps = {
-		children: ReactNode;
-	};
-
-	/**
-	 * Обертка, которая закрывает окно, если кликнули по ней
-	 */
-	function OutsideClickFormCloser({ children }: TOutsideClickFormProps) {
-		const wrapperRef = useRef(null);
-		useOutsideClickFormCloser(wrapperRef);
-		return <div ref={wrapperRef}>{children}</div>;
-	}
-
 	return (
-		<OutsideClickFormCloser>
+		<OutsideClickFormCloser state={isContainerOpen} setState={setIsContainerOpen}>
 			<ArrowButton
 				isContainerOpen={isContainerOpen}
-				handleClickArrowButton={handleClickArrowButton}
+				onClick={handleClickArrowButton}
 			/>
 			<aside
 				className={clsx(styles.container, {
 					[styles.container_open]: isContainerOpen,
 				})}>
-				<form className={styles.form}>
+				<form
+					className={styles.form}
+					onSubmit={(evt: React.SyntheticEvent) => {
+						evt.preventDefault();
+						onChangeParams({
+							fontFamilyOption: fontSelected,
+							fontColor: fontColorSelected,
+							backgroundColor: bgColorSelected,
+							contentWidth: contentWidthSelected,
+							fontSizeOption: fontSizeSelected,
+						});
+						setIsContainerOpen(false);
+					}}
+					>
 					<h2 className={styles.title}>Задайте параметры</h2>
 					<Select
 						options={fontFamilyOptions}
@@ -157,17 +139,6 @@ export const ArticleParamsForm = ({
 						<Button
 							title='Применить'
 							type='submit'
-							onClick={(evt: React.SyntheticEvent) => {
-								evt.preventDefault();
-								onChangeParams({
-									fontFamilyOption: fontSelected,
-									fontColor: fontColorSelected,
-									backgroundColor: bgColorSelected,
-									contentWidth: contentWidthSelected,
-									fontSizeOption: fontSizeSelected,
-								});
-								setIsContainerOpen(false);
-							}}
 						/>
 					</div>
 				</form>

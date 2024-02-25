@@ -1,4 +1,4 @@
-.container {
+.arrowContainer {
 	box-sizing: border-box;
 	position: fixed;
 	top: 31px;
@@ -13,16 +13,17 @@
 	transition: transform 0.5s ease;
 }
 
-.container:hover {
+.arrowContainer:hover {
 	background: rgb(255, 200, 2);
 }
 
-.container:active {
+.arrowContainer:active {
 	background: rgb(120, 120, 120);
 }
 
-.container_open {
+.arrowContainer_open {
 	transform: translate(616px);
+	transition: transform 0.5s ease;
 }
 
 .arrow {
@@ -30,7 +31,7 @@
 	height: 48px;
 	flex-shrink: 0;
 	transform: rotate(180deg);
-	transition: transform 0.5s ease;
+	transition: transform 1s ease;
 }
 
 .arrow_open {

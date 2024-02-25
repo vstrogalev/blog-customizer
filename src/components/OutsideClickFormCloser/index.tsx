@@ -1,0 +1,1 @@
+export {OutsideClickFormCloser} from './OutsideClickFormCloser'
